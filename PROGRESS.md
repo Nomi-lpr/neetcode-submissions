@@ -11,6 +11,6 @@
 
 | 题目 | 一句话思路 |
 |---|---|
-| [duplicate-integer](Data Structures & Algorithms/duplicate-integer/NOTES.md) |  |
-| [is-anagram](Data Structures & Algorithms/is-anagram/NOTES.md) | 用长度为 26 的数组分别统计两个字符串中字母出现次数，再判断每个字母的出现次数是否全部为 0。 |
+| [duplicate-integer](Data Structures & Algorithms/duplicate-integer/NOTES.md) | 用一个 set 记录已经见过的数字，如果遇到已经在 set 里的数，立刻返回 True，否则遍历完后返回 False。 |
+| [is-anagram](Data Structures & Algorithms/is-anagram/NOTES.md) | 用长度为 26 的数组统计 s 和 t 每个字母出现次数，逐一相加相减，最后数组全为 0 则说明两个字符串互为 anagram。 |
 | [two-integer-sum](Data Structures & Algorithms/two-integer-sum/NOTES.md) |  |
