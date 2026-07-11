@@ -1,0 +1,46 @@
+name: Auto-generate review notes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/submission-*.py'   # 只在有新提交的解题代码时触发
+  workflow_dispatch:            # 也允许手动触发（用于补齐历史题目）
+    inputs:
+      regenerate_all:
+        description: '重新生成所有题目的笔记（yes/no）'
+        default: 'no'
+
+permissions:
+  contents: write               # 允许 workflow 把生成的 NOTES.md 推回仓库
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2        # 需要上一个 commit 来做 diff，找出新增文件
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install openai
+
+      - name: Generate notes
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REGENERATE_ALL: ${{ github.event.inputs.regenerate_all || 'no' }}
+        run: python scripts/summarize.py
+
+      - name: Commit notes back
+        run: |
+          git config user.name "notes-bot"
+          git config user.email "notes-bot@users.noreply.github.com"
+          git add -A '**/NOTES.md' PROGRESS.md || true
+          git diff --cached --quiet || git commit -m "docs: auto-generate review notes"
+          git push
